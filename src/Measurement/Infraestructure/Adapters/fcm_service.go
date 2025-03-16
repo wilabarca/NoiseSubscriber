@@ -1,23 +1,23 @@
 package adapters
 
 import (
-	
-"context"
+	repositories "NoisEsub/src/Measurement/Domain/Repositories"
+	"context"
 	"log"
+
 	"firebase.google.com/go/messaging"
 )
 
 
-type FCMService struct{
+type FCMService struct {
 	client *messaging.Client
 }
 
- func NewFCMService(client *messaging.Client) *FCMService {
-	 return &FCMService{client: client}
-	
- }
+func NewFCMService(client *messaging.Client) repositories.NotificationService {
+	return &FCMService{client: client}
+}
 
- func (s *FCMService) Send(title, body string) error {
+func (s *FCMService) Send(title, body string) error {
 	message := &messaging.Message{
 		Notification: &messaging.Notification{
 			Title: title,
@@ -29,6 +29,7 @@ type FCMService struct{
 	_, err := s.client.Send(context.Background(), message)
 	if err != nil {
 		log.Printf("FCM error: %v", err)
+		return err
 	}
-	return err
+	return nil
 }
